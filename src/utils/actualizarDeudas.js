@@ -17,46 +17,19 @@ function actualizar(deudas, pagos, logger) {
     const deudasJS = jsonToJS('./in/deudasO.json');
     const pagosJS = jsonToJS('./in/pagos.json');
     const arrCombinado = [];
-    let idxD = 0;
-    let idxP = 0;
-    
-    //Loopear pagos
-    while(idxD < deudas.length){
-        if(deudas[idxD].dni === )
 
-        
-    }
-    Entrar al primer subindice del array de pagos y acceder al objeto.dni
+    console.log(deudasJS)
+    console.log(pagosJS)
+}
+    //Loopear pagos
+ 
+ /*    Entrar al primer subindice del array de pagos y acceder al objeto.dni
         Loopear deudas
             Guardar el dni y buscarlo en el deudasOld
             si se encuentra
                 copiar el objeto al nuevo array con la deuda actualizada
 
-    
-    
-    
-    
-    while (idxA < arrA.length || idxB < arrB.length) {
-        if (idxA >= arrA.length) {
-            arrCombinado.push(arrB[idxB])
-            idxB++
-        } else if (idxB >= arrB.length) {
-            arrCombinado.push(arrA[idxA])
-            idxA++
-        } else if (arrA[idxA] < arrB[idxB]) {
-            arrCombinado.push(arrA[idxA])
-            idxA++
-        } else if (arrB[idxB] < arrA[idxA]) {
-            arrCombinado.push(arrB[idxB])
-            idxB++
-        } else {
-            arrCombinado.push(arrA[idxA])
-            idxA++
-            idxB++
-        }
-    }
-    return arrCombinado
-}
+*/
 
 function jsonToJS(ruta){
     const pagos = fs.readFileSync(ruta);
@@ -64,6 +37,7 @@ function jsonToJS(ruta){
     return pagosJS;
 }
 
-export {
-    actualizar
+export default{
+    actualizar,
+    jsonToJS
 }
