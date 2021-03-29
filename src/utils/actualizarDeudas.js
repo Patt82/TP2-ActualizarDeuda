@@ -1,5 +1,5 @@
 import mpl from './mensajesParaLoguear.js'
-import fs from 'fs'
+
 /**
  * @callback loggerCallback
  * @param {string} error error message to display
@@ -13,52 +13,65 @@ import fs from 'fs'
  * @returns {Object[]} las deudas actualizadas
  */
 
-/**
- * Con el tema del log voy a tener que escribir en un documento con las erramientas esas fs...
- * ● Si aparece un registro de pago con un dni que no coincide con el de ninguna deuda, ese
-registro no se procesa, y se debe loguear como operación inválida.ESTÁ
-
-● Si aparece un registro de pago que coincide con una deuda en su dni pero no en su
-apellido, el mismo no se procesa, y se deben loguear ambos, la deuda y el pago. ESTÁ
-
- ●Si un registro de deuda no posee pagos asociados, se agrega directamente al array
-actualizado, sin cambios. FALTA
-
- ●Si luego de aplicar todos los pagos correspondientes a una deuda, ésta aun
-queda en positivo, se agrega al array actualizado con el nuevo importe.
-
-
-
- */
 function actualizar(deudas, pagos, logger) {
-    const arrCombinado = [];
-    let dniPagoNoCoincide = [];
-    const deudasJS = jsonToJS('./in/deudasO.json');
-    const pagosJS = jsonToJS('./in/pagos.json');
-    console.log(deudasJS);
-    console.log(pagosJS);
 
-    deudasJS.forEach((deuda, x) => {
+    //Esta variable va a guardar todos los pagos que no coinciden 
+    let sinDeudaAsociada = [];
 
-        pagosJS.forEach((pago, i) => {
-            if (deuda.dni) {
+    //Esta variable va a guardar los pagos y las deudas que se encuentren
+    // con dni pero no coincidan sus apellidos
+    let coincideDnIPeroNoApellido = [];
 
+    //Este array va a guardar todas las deudas actualizadas.
+    let deudasNew = [];
+
+    //Clientes con saldo a favor
+    let clientesConSaldoAFavor = [];
+
+    //Este for me va a cargar todos los pagos
+    pagos.forEach(pagos => {
+        sinDeudaAsociada.push(pagos);
+    })
+    //Verifico cada pago con cada deuda.
+    deudas.forEach((deuda, x) => {
+        pagos.forEach((pago, i) => {
+            if (pago.dni === deuda.dni) {
+                //Si coincide el dni de la deuda con el del pago voy dejando en 0 esa posición del array 
+                //para descartarlo porque conincidió y así filtrar que quede solo el que no lo hizo. 
+                sinDeudaAsociada[i] = null;
+                if (pago.apellido === deuda.apellido) {
+                    //Le resto el pago a la deuda                
+                    deuda.debe -= pago.pago;
+                    if (deuda.debe <= 0) {
+                        //Me guardo los clientes que tienen saldo a favor
+                        clientesConSaldoAFavor.push(pago);
+
+                    } else {
+                        deudasNew.push(deuda);
+                    }
+                } else {
+                    //Creo un objeto para guardar las deudas y los pagos que 
+                    //coincidan en el dni pero no en el apellido y lo pusheo.
+                    let deudaPago = {};
+                    deudaPago.Deuda = deuda;
+                    deudaPago.pago = pago;
+                    coincideDnIPeroNoApellido.push(deudaPago);
+
+                    //Me guardo la deuda ya que no se pudo pagar por el problema del nombre
+                    //Y la tengo que mostrar como pendiente
+                    deudasNew.push(deuda);
+                }
             }
         });
     });
+    sinDeudaAsociada = sinDeudaAsociada.filter(pago => pago != null);
+    sinDeudaAsociada.map(pago => {
+        return console.log("Sin deuda asociada: ", pago);
+    });
 
 
-
+    return deudasNew;
 }
-
-
-function jsonToJS(ruta) {
-    const pagos = fs.readFileSync(ruta);
-    const pagosJS = JSON.parse(pagos);
-    return pagosJS;
-}
-
 export default {
-    actualizar,
-    jsonToJS
+    actualizar
 }

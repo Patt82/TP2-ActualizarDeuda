@@ -4,6 +4,7 @@
  * @param {string[]} claves las claves por las que quiero ordenar, por orden de importancia
  */
 function ordenar(coleccion, claves) {
+    
 }
 
 /**
