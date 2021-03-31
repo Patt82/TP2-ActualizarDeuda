@@ -10,7 +10,7 @@ import fs from 'fs'
 function actualizarArchivosDeudas(rutaDeudasOld, rutaPagos, rutaDeudasNew, rutaLog) {
     const pagos = jsonToJS(rutaPagos);
     const deudas = jsonToJS(rutaDeudasOld);
-    console.log(actualizar.actualizar(deudas,pagos));
+    console.log(actualizar.actualizar(deudas,pagos,logger));
     
 
     //el resultado de la función actualizar lo tengo que convertir en json usando el rutaDeudasnew
@@ -22,8 +22,8 @@ function jsonToJS(ruta) {
     return pagosJS;
 }
 
-function logger(ruta){
-    
+function logger(rutaLog,dato){
+    fs.appendFileSync( rutaLog , dato);
 }
 
 export default {

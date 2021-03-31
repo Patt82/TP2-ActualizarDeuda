@@ -45,6 +45,9 @@ function actualizar(deudas, pagos, logger) {
                     if (deuda.debe <= 0) {
                         //Me guardo los clientes que tienen saldo a favor
                         clientesConSaldoAFavor.push(pago);
+                        let aFavor = mpl.armarMsgPagoDeMas(deuda);
+                        console.log("A FAVOR: ",aFavor);
+                       // logger(ruta,aFavor);
 
                     } else {
                         deudasNew.push(deuda);
@@ -68,7 +71,7 @@ function actualizar(deudas, pagos, logger) {
     sinDeudaAsociada.map(pago => {
         return console.log("Sin deuda asociada: ", pago);
     });
-
+    
 
     return deudasNew;
 }
