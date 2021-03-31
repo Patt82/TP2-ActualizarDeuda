@@ -53,7 +53,6 @@ function actualizar(deudas, pagos, logger) {
                         if (deudasNew.indexOf(deuda) == -1) {
                             deudasNew.push(deuda);
                         }
-
                     }
                 } else {
                     //Creo un objeto para guardar las deudas y los pagos que 
@@ -61,9 +60,7 @@ function actualizar(deudas, pagos, logger) {
                     let deudaPago = {};
                     deudaPago.deuda = deuda;
                     deudaPago.pago = pago;
-
                     coincideDnIPeroNoApellido.push(deudaPago);
-
                     //Me guardo la deuda ya que no se pudo pagar por el problema del nombre
                     //Y la tengo que mostrar como pendiente
                     deudasNew.push(deuda);
@@ -71,12 +68,14 @@ function actualizar(deudas, pagos, logger) {
             }
         });
     });
-    sinDeudaAsociada = sinDeudaAsociada.filter(pago => pago != null && pago.debe != 0);
+    //Procuca quitarle los objetos nulos al array de pagos sin deuda vinculada
+    sinDeudaAsociada = sinDeudaAsociada.filter(pago => pago != null);
+    //Logger apellido erroneo
     coincideDnIPeroNoApellido.forEach(deudaPago => {
         let coinciden = mpl.armarMsgPagoConDatosErroneos(deudaPago.deuda, deudaPago.pago);
         logger(false, coinciden);
     });
-
+    //logger sin deuda asociada
     sinDeudaAsociada.forEach(pago => {
         let sinDeuda = mpl.armarMsgPagoSinDeudaAsociada(pago);
         logger(false, sinDeuda);

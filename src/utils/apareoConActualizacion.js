@@ -13,30 +13,23 @@ function actualizarArchivosDeudas(rutaDeudasOld, rutaPagos, rutaDeudasNew, rutaL
 
     let deudasNew = act.actualizar(deudas, pagos, (error, response) => {
         if (error) {
-            console.log(error)
+            console.log(error);
         } else {
-            fs.appendFileSync(rutaLog, response)
-            console.log(response)
+            fs.appendFileSync(rutaLog, response);            
         }
     });
 
-    let deJsAJSON = JSON.stringify(deudasNew, false, 4);
-    fs.writeFileSync(rutaDeudasNew, deJsAJSON);
-
-
     //el resultado de la función actualizar lo tengo que convertir en json usando el rutaDeudasnew
+    let deJsAJSON = JSON.stringify(deudasNew, false, 4);
+    fs.writeFileSync(rutaDeudasNew, deJsAJSON);    
 }
 
+//De JSON a objeto JS
 function jsonToJS(ruta) {
     const pagos = fs.readFileSync(ruta);
     const pagosJS = JSON.parse(pagos);
     return pagosJS;
 }
-
-// function logger(rutaLog, dato) {
-//     fs.appendFileSync(rutaLog, dato);
-// }
-
 export default {
     actualizarArchivosDeudas
 }
