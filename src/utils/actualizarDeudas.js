@@ -15,7 +15,7 @@ import mpl from './mensajesParaLoguear.js'
  */
 
 function actualizar(deudas, pagos, logger) {
-
+    
     //Esta variable va a guardar todos los pagos que no coinciden 
     let sinDeudaAsociada = [];
 
@@ -37,6 +37,7 @@ function actualizar(deudas, pagos, logger) {
                 //Si coincide el dni de la deuda con el del pago voy dejando en 0 esa posición del array 
                 //para descartarlo porque conincidió y así filtrar que quede solo el que no lo hizo. 
                 sinDeudaAsociada[i] = null;
+                
                 if (pago.apellido === deuda.apellido) {
                     //Le resto el pago a la deuda                
                     deuda.debe -= pago.pago;
@@ -55,7 +56,8 @@ function actualizar(deudas, pagos, logger) {
                     let deudaPago = {};
                     deudaPago.deuda = deuda;
                     deudaPago.pago = pago;
-                    coincideDnIPeroNoApellido.push(deudaPago);
+               
+                    coincideDnIPeroNoApellido.push(deudaPago);                
 
                     //Me guardo la deuda ya que no se pudo pagar por el problema del nombre
                     //Y la tengo que mostrar como pendiente
@@ -67,8 +69,13 @@ function actualizar(deudas, pagos, logger) {
     sinDeudaAsociada = sinDeudaAsociada.filter(pago => pago != null);
   /*   sinDeudaAsociada.map(pago => {
         return console.log("Sin deuda asociada: ", pago);
-    }); */    
-
+    }); */
+    coincideDnIPeroNoApellido.forEach(deudaPago =>{
+        let coinciden = mpl.armarMsgPagoConDatosErroneos(deudaPago.deuda, deudaPago.pago);
+        logger(false,coinciden);
+    })
+         
+    
     return deudasNew;
 }
 export default {
