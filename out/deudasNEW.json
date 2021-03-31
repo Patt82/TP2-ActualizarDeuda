@@ -19,19 +19,5 @@
         "nombre": "ariel",
         "apellido": "martinez",
         "debe": 120
-    },
-    {
-        "id": 5,
-        "dni": 567,
-        "nombre": "ariel",
-        "apellido": "martinez",
-        "debe": 120
-    },
-    {
-        "id": 5,
-        "dni": 567,
-        "nombre": "ariel",
-        "apellido": "martinez",
-        "debe": 120
     }
 ]
