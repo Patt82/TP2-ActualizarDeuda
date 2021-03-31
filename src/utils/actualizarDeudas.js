@@ -1,5 +1,6 @@
 import mpl from './mensajesParaLoguear.js'
 
+
 /**
  * @callback loggerCallback
  * @param {string} error error message to display
@@ -25,9 +26,6 @@ function actualizar(deudas, pagos, logger) {
     //Este array va a guardar todas las deudas actualizadas.
     let deudasNew = [];
 
-    //Clientes con saldo a favor
-    let clientesConSaldoAFavor = [];
-
     //Este for me va a cargar todos los pagos
     pagos.forEach(pagos => {
         sinDeudaAsociada.push(pagos);
@@ -43,11 +41,10 @@ function actualizar(deudas, pagos, logger) {
                     //Le resto el pago a la deuda                
                     deuda.debe -= pago.pago;
                     if (deuda.debe <= 0) {
-                        //Me guardo los clientes que tienen saldo a favor
-                        clientesConSaldoAFavor.push(pago);
-                        let aFavor = mpl.armarMsgPagoDeMas(deuda);
-                        console.log("A FAVOR: ",aFavor);
-                       // logger(ruta,aFavor);
+                        //callback
+                        //Me guardo los clientes que tienen saldo a favor                        
+                        let aFavor = mpl.armarMsgPagoDeMas(deuda);                                     
+                        logger(false,aFavor);
 
                     } else {
                         deudasNew.push(deuda);
@@ -56,7 +53,7 @@ function actualizar(deudas, pagos, logger) {
                     //Creo un objeto para guardar las deudas y los pagos que 
                     //coincidan en el dni pero no en el apellido y lo pusheo.
                     let deudaPago = {};
-                    deudaPago.Deuda = deuda;
+                    deudaPago.deuda = deuda;
                     deudaPago.pago = pago;
                     coincideDnIPeroNoApellido.push(deudaPago);
 
@@ -68,10 +65,9 @@ function actualizar(deudas, pagos, logger) {
         });
     });
     sinDeudaAsociada = sinDeudaAsociada.filter(pago => pago != null);
-    sinDeudaAsociada.map(pago => {
+  /*   sinDeudaAsociada.map(pago => {
         return console.log("Sin deuda asociada: ", pago);
-    });
-    
+    }); */    
 
     return deudasNew;
 }
