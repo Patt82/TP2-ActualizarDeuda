@@ -1,11 +1,9 @@
 import mpl from './mensajesParaLoguear.js'
 
-
 /**
  * @callback loggerCallback
  * @param {string} error error message to display
  */
-
 /**
  * realiza el apareo con actualizacion entre deudas y pagos, y loguea algunos eventos relevantes.
  * @param {Object[]} deudas las deudas originales
@@ -18,7 +16,6 @@ function actualizar(deudas, pagos, logger) {
 
     //Esta variable va a guardar todos los pagos que no coinciden 
     let sinDeudaAsociada = [];
-
     //Esta variable va a guardar los pagos y las deudas que se encuentren
     // con dni pero no coincidan sus apellidos
     let coincideDnIPeroNoApellido = [];
@@ -30,6 +27,7 @@ function actualizar(deudas, pagos, logger) {
     pagos.forEach(pagos => {
         sinDeudaAsociada.push(pagos);
     })
+
     //Verifico cada pago con cada deuda.
     deudas.forEach((deuda, x) => {
         pagos.forEach((pago, i) => {
@@ -37,17 +35,18 @@ function actualizar(deudas, pagos, logger) {
                 //Si coincide el dni de la deuda con el del pago voy dejando en 0 esa posición del array 
                 //para descartarlo porque conincidió y así filtrar que quede solo el que no lo hizo. 
                 sinDeudaAsociada[i] = null;
+
                 if (pago.apellido === deuda.apellido) {
                     //Le resto el pago a la deuda                
                     deuda.debe -= pago.pago;
-                    if (deuda.debe <= 0) {
-                        //callback
-                        //Me guardo los clientes que tienen saldo a favor                        
-                        let aFavor = mpl.armarMsgPagoDeMas(deuda);                                     
-                        logger(false,aFavor);
+                    if (deuda.debe < 0) {
+                        let aFavor = mpl.armarMsgPagoDeMas(deuda);
+                        logger(false, aFavor);
+                    } else if (deuda.debe != 0) {
 
-                    } else {
-                        deudasNew.push(deuda);
+                        if (deudasNew.indexOf(deuda) === -1) {
+                            deudasNew.push(deuda);
+                        }
                     }
                 } else {
                     //Creo un objeto para guardar las deudas y los pagos que 
@@ -55,21 +54,33 @@ function actualizar(deudas, pagos, logger) {
                     let deudaPago = {};
                     deudaPago.deuda = deuda;
                     deudaPago.pago = pago;
-                    coincideDnIPeroNoApellido.push(deudaPago);
 
-                    //Me guardo la deuda ya que no se pudo pagar por el problema del nombre
-                    //Y la tengo que mostrar como pendiente
+                    //Guardo deuda y pago con apellido erróneo.
+                    coincideDnIPeroNoApellido.push(deudaPago);
+                    //Me guardo la deuda ya que no se pudo pagar por el problema del apellido y debe quedar como pendiente
                     deudasNew.push(deuda);
                 }
             }
         });
     });
+
+    //Filtra objetos null creados por pagos sin deuda vinculada.
     sinDeudaAsociada = sinDeudaAsociada.filter(pago => pago != null);
-  /*   sinDeudaAsociada.map(pago => {
-        return console.log("Sin deuda asociada: ", pago);
-    }); */    
+
+    //Armado de msj para logger con apellido inexistente
+    coincideDnIPeroNoApellido.forEach(deudaPago => {
+        let coinciden = mpl.armarMsgPagoConDatosErroneos(deudaPago.deuda, deudaPago.pago);
+        logger(false, coinciden);
+    });
+
+    //Armado de msj para logger pago sin deuda asociada
+    sinDeudaAsociada.forEach(pago => {
+        let sinDeuda = mpl.armarMsgPagoSinDeudaAsociada(pago);
+        logger(false, sinDeuda);
+    });
 
     return deudasNew;
+
 }
 export default {
     actualizar
