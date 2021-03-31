@@ -22,7 +22,7 @@ function actualizarArchivosDeudas(rutaDeudasOld, rutaPagos, rutaDeudasNew, rutaL
     
     let deJsAJSON = JSON.stringify(deudasNew);
     console.log(typeof deJsAJSON);
-
+    //test
     // fs.appendFile(rutaDeudasNew,deJsAJSON);
     console.log(deJsAJSON)
 
